@@ -6,7 +6,8 @@ try:
     import fasttext
 except ImportError:
     raise ImportError(
-        "Could not import fasttext, please install with " "`pip install fasttext-wheel`."
+        "Could not import fasttext, please install with " 
+        "`pip install fasttext-wheel`."
     )
 
 
@@ -17,7 +18,11 @@ class FastTextDetector(LanguageDetectorBase):
     """
     
     def __init__(self, threshold: float = 0.1):
-        self.model = fasttext.load_model("lid.176.ftz")
+        try:
+            self.model = fasttext.load_model("lid.176.ftz")
+        except FileNotFoundError:
+            raise FileNotFoundError("You need to download the fasttext model first from https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz.")
+        
         self.threshold = threshold
     
     def _detect_single(self, text: str) -> str:
