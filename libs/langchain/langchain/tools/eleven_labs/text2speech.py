@@ -1,4 +1,3 @@
-import tempfile
 from enum import Enum
 from typing import Any, Dict, Optional, Union
 
@@ -56,20 +55,14 @@ class ElevenLabsText2SpeechTool(BaseTool):
         elevenlabs = _import_elevenlabs()
         try:
             speech = elevenlabs.generate(text=query, model=self.model)
-            with tempfile.NamedTemporaryFile(
-                mode="bx", suffix=".wav", delete=False
-            ) as f:
-                f.write(speech)
-            return f.name
+            self.play(speech)
+            return "Speech has been generated"
         except Exception as e:
             raise RuntimeError(f"Error while running ElevenLabsText2SpeechTool: {e}")
 
-    def play(self, speech_file: str) -> None:
+    def play(self, speech: bytes) -> None:
         """Play the text as speech."""
         elevenlabs = _import_elevenlabs()
-        with open(speech_file, mode="rb") as f:
-            speech = f.read()
-
         elevenlabs.play(speech)
 
     def stream_speech(self, query: str) -> None:
